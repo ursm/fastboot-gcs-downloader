@@ -1,7 +1,7 @@
-const path    = require('path');
-const storage = require('@google-cloud/storage');
-const fsp     = require('fs-promise');
-const {exec}  = require('mz/child_process');
+const path      = require('path');
+const {Storage} = require('@google-cloud/storage');
+const fsp       = require('fs-promise');
+const {exec}    = require('mz/child_process');
 
 function fetchCurrentVersion(ui, configFile) {
   ui.writeLine(`fetching current app version from ${configFile.bucket.name}/${configFile.name}`);
@@ -81,7 +81,7 @@ class GCSDownloader {
       return Promise.reject(new AppNotFoundError());
     }
 
-    const gcs        = storage(this.authentication);
+    const gcs        = new Storage(this.authentication);
     const configFile = gcs.bucket(this.configBucket).file(this.configKey);
 
     return fetchCurrentVersion(this.ui, configFile).then(({bucket: appBucket, key: appKey}) => {
